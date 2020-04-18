@@ -21,26 +21,79 @@
                     var contractABI = web3.eth.contract(JSON.parse('{{contractABI | safe}}'));
                     var contractInstance = contractABI.at(sc_address);
                     contract = contractInstance;
-                    $("span#pot").text(10000);
+                    
+                    contractInstance.getPot(function(error, result) {
+                      if(!error) {
+                        var pot = JSON.stringify(result);
+                        console.log(pot)
+                        $("span#pot").text(pot);
+                      }
+                      else {
+                        alert("Can't get pot value");
+                      }
+                    });
+
+                    contractInstance.getWinner(function(error, result) {
+                      if(!error) {
+                        var winner = JSON.stringify(result);
+                        console.log(winner)
+                        $("span#winner").text(winner);
+                      }
+                      else {
+                        alert("Can't get winner value");
+                      }
+                    });
+
+                    contractInstance.getPlayer1(function(error, result) {
+                      if(!error) {
+                        var player1 = JSON.stringify(result);
+                        console.log(player1)
+                        $("span#player1").text(player1);
+                      }
+                      else {
+                        alert("Can't get player1 value");
+                      }
+                    });
+
+                    contractInstance.getPlayer2(function(error, result) {
+                      if(!error) {
+                        var player2 = JSON.stringify(result);
+                        console.log(player2)
+                        $("span#player2").text(player2);
+                      }
+                      else {
+                        alert("Can't get player2 value");
+                      }
+                    });
+
+                    $("a#call_reveal").click(function() {
+                      var choice = $("input#bet").val() == 0;
+                      var _nonce = $("input#nonce").val();
+                      contractInstance.reveal(choice, _nonce, 
+                        {from:web3.eth.accounts[0], gas:100000}, function(error, result) {
+                        if(error) {
+                          alert("Error reveal()");
+                        }
+                      });
+                    });
 
                     $("a#call_flipCoin").click(function() {
                       // 0 is heads, else is tails 
                       var bet = $("input#bet").val() == 0;
                       var betAmount = $("input#betAmount").val();
                       var nonce = $("input#nonce").val();
-                      contractInstance.flipCoin(bet, nonce, {value: betAmount, gas:100000}, function(error, result) {
+                      contractInstance.flipCoin(bet, nonce, 
+                        {from:web3.eth.accounts[0], value: betAmount, gas:100000}, function(error, result) {
                         if(error) {
                           alert("Error flipCoin()");
-                          reject(error);
                         }
                       });
                     });
 
                     $("a#call_cancel").click(function() {
-                      contractInstance.cancel({gas:100000}, function(error, result) {
+                      contractInstance.cancel({from:web3.eth.accounts[0], gas:100000}, function(error, result) {
                         if(error) {
                           alert("Error cancel()");
-                          reject(error);
                         }
                       });
                     });
@@ -48,14 +101,30 @@
                     $("a#call_takeBet").click(function() {
                       var bet_p2 = $("input#bet_p2").val() == 0;
                       var betAmount_p2 = $("input#betAmount_p2").val();
-                      contractInstance.takeBet(bet_p2, {value: betAmount_p2, gas:100000}, function(error, result) {
+                      contractInstance.takeBet(bet_p2, 
+                        {from:web3.eth.accounts[0], value: betAmount_p2, gas:100000}, function(error, result) {
                         if(error) {
                           alert("Error takeBet()");
-                          reject(error);
                         }
                       });
                     });
 
+                    $("a#call_claimTimeout").click(function() {
+                      contractInstance.claimTimeout( 
+                        {gas:100000}, function(error, result) {
+                        if(error) {
+                          alert("Error takeBet()");
+                        }
+                      });
+                    });
+
+                    $("a#call_reset").click(function() {
+                      contractInstance.reset(function(error, result) {
+                        if(error) {
+                          alert("Error reset()");
+                        }
+                      })
+                    })
                 }
 
                 else {
@@ -83,19 +152,18 @@
   					<header class="align-center">
   						<h2>Coin Flip</h2>
   					</header>
-            <header>
+            <footer>
               <h3>Pot</h3>
-            </header>
-            <p><span id="pot">0</span><p>
+              <p><span id="pot">0</span><p>
+              <h3>Winner</h3>
+              <p><span id="winner">0</span><p>
+            </footer>
             <div class="flex flex-2">
               <article>
                 <header>
                   <h3>Player 1</h3>
                 </header>
-  							<footer>
-  								<a href="#" id="call_cancel" class="button special">Cancel</a>
-  							</footer>
-                <p>&nbsp;</p>
+                <p><span id="player1">0</span><p>
                 <p>Bet (0 = true, 1 = false): <input type="text" id="bet" value="0" /></p>
                 <p>Bet amount (in Wei, minimum bet: 10 Wei): <input type="text" id="betAmount" value="0" /></p>
                 <p>Nonce (Random uint): <input type="text" id="nonce" value="0" /></p>
@@ -103,19 +171,32 @@
   								<a href="#" id="call_flipCoin" class="button special">
                     Flip Coin
                   </a>
+                  <a href="#" id="call_reveal" class="button special">
+                    Reveal
+                  </a>
+                  <a href="#" id="call_cancel" class="button special">
+                    Cancel
+                  </a>
   							</footer>
                 <br />
                 <header>
   								<h3>Player 2</h3>
   							</header>
+                <p><span id="player2">0</span><p>                
   							<footer>
                    <p>Bet (0 = true, 1 = false): <input type="text" id="bet_p2" value="0" /></p>
                   <p>Bet amount (in Wei, minimum bet: 10 Wei): <input type="text" id="betAmount_p2" value="0" /></p>
   								<a href="#" id="call_takeBet" class="button special">
                     Take Bet
                   </a>
+                  <a href="#" id="call_claimTimeout" class="button special">
+                    Claim Timeout
+                  </a>
   							</footer>
   						</article>
+              <a href="#" id="call_reset" class="button special">
+                Reset
+              </a>
             </div>
   				</div>
   			</section>
