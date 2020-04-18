@@ -46,3 +46,7 @@ There is a corresponding `<span>` tag with ID winner in the HTML which gets upda
 
 You may view the screenshots of the frontend here:   
 ![alt text](https://github.com/aidenchia/50.037_Ex11/blob/master/src/images/fe1.png)
+![alt text](https://github.com/aidenchia/50.037_Ex11/blob/master/src/images/fe2.png)
+![alt text](https://github.com/aidenchia/50.037_Ex11/blob/master/src/images/fe3.png)
+
+
