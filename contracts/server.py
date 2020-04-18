@@ -28,8 +28,7 @@ tx_receipt = web3.eth.waitForTransactionReceipt(tx_hash)
 # Instantiate the smart contract at specified address
 contract = web3.eth.contract(address=tx_receipt.contractAddress, abi=abi)
 
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['POST', 'GET'])
 def hello():
     return render_template('template.html', contractAddress = contract.address.lower(), contractABI = json.dumps(abi))
 

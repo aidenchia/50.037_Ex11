@@ -21,6 +21,41 @@
                     var contractABI = web3.eth.contract(JSON.parse('{{contractABI | safe}}'));
                     var contractInstance = contractABI.at(sc_address);
                     contract = contractInstance;
+                    $("span#pot").text(10000);
+
+                    $("a#call_flipCoin").click(function() {
+                      // 0 is heads, else is tails 
+                      var bet = $("input#bet").val() == 0;
+                      var betAmount = $("input#betAmount").val();
+                      var nonce = $("input#nonce").val();
+                      contractInstance.flipCoin(bet, nonce, {value: betAmount, gas:100000}, function(error, result) {
+                        if(error) {
+                          alert("Error flipCoin()");
+                          reject(error);
+                        }
+                      });
+                    });
+
+                    $("a#call_cancel").click(function() {
+                      contractInstance.cancel({gas:100000}, function(error, result) {
+                        if(error) {
+                          alert("Error cancel()");
+                          reject(error);
+                        }
+                      });
+                    });
+
+                    $("a#call_takeBet").click(function() {
+                      var bet_p2 = $("input#bet_p2").val() == 0;
+                      var betAmount_p2 = $("input#betAmount_p2").val();
+                      contractInstance.takeBet(bet_p2, {value: betAmount_p2, gas:100000}, function(error, result) {
+                        if(error) {
+                          alert("Error takeBet()");
+                          reject(error);
+                        }
+                      });
+                    });
+
                 }
 
                 else {
@@ -48,26 +83,37 @@
   					<header class="align-center">
   						<h2>Coin Flip</h2>
   					</header>
+            <header>
+              <h3>Pot</h3>
+            </header>
+            <p><span id="pot">0</span><p>
             <div class="flex flex-2">
               <article>
-  				            <header>
-  								<h3>Number</h3>
-  							</header>
-  							<p><span id="number">0</span><p>
+                <header>
+                  <h3>Player 1</h3>
+                </header>
   							<footer>
-  								<a href="#" id="call_getNumber" class="button special">Get number</a>
+  								<a href="#" id="call_cancel" class="button special">Cancel</a>
   							</footer>
-                            <p>New value: <input type="text" id="number" value="0" /></p>
-                            <footer>
-  								<a href="#" id="call_setNumber" class="button special">Set number</a>
+                <p>&nbsp;</p>
+                <p>Bet (0 = true, 1 = false): <input type="text" id="bet" value="0" /></p>
+                <p>Bet amount (in Wei, minimum bet: 10 Wei): <input type="text" id="betAmount" value="0" /></p>
+                <p>Nonce (Random uint): <input type="text" id="nonce" value="0" /></p>
+                <footer>
+  								<a href="#" id="call_flipCoin" class="button special">
+                    Flip Coin
+                  </a>
   							</footer>
-                            <br />
-                            <header>
-  								<h3>Owner</h3>
+                <br />
+                <header>
+  								<h3>Player 2</h3>
   							</header>
-  							<p><span id="owner">None</span><p>
   							<footer>
-  								<a href="#" id="call_getOwner" class="button special">Get owner</a>
+                   <p>Bet (0 = true, 1 = false): <input type="text" id="bet_p2" value="0" /></p>
+                  <p>Bet amount (in Wei, minimum bet: 10 Wei): <input type="text" id="betAmount_p2" value="0" /></p>
+  								<a href="#" id="call_takeBet" class="button special">
+                    Take Bet
+                  </a>
   							</footer>
   						</article>
             </div>
