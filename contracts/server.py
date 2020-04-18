@@ -23,16 +23,17 @@ CF = web3.eth.contract(abi=abi, bytecode=bytecode)
 tx_hash = CF.constructor().transact()
 tx_receipt = web3.eth.waitForTransactionReceipt(tx_hash)
 
-print(tx_receipt)
+#print(tx_receipt)
 
 # Instantiate the smart contract at specified address
 contract = web3.eth.contract(address=tx_receipt.contractAddress, abi=abi)
 
+@app.route('/')
+@app.route('/index')
+def hello():
+    return render_template('template.html', contractAddress = contract.address.lower(), contractABI = json.dumps(abi))
 
-
-
-
-
-
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
