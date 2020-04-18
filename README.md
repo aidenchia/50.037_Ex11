@@ -45,4 +45,4 @@ contractInstance.getWinner(
 There is a corresponding `<span>` tag with ID winner in the HTML which gets updated with the value of winner. I had to write a getWinner() function specially for this purpose instead of relying on Solidity's automatic getter functions. 
 
 You may view the screenshots of the frontend here:   
- 
+![alt text](https://github.com/aidenchia/50.037_Ex11/blob/master/src/images/fe1.png)
