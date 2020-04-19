@@ -94,11 +94,11 @@ event Approval (
 I set the total supply to 1,000,000 tokens and all of it is given to the contract deployer as follows:
 ```
 constructor() public {
-	    minBet = 10 wei;
-	    // Creator of contract will hold 1000000 tokens
-	    balanceOf[msg.sender] = 1000000;
-	    totalSupply = 1000000;
-	}
+  minBet = 10 wei;
+  // Creator of contract will hold 1000000 tokens
+  balanceOf[msg.sender] = 1000000;
+  totalSupply = 1000000;
+}
 ```
 
 I then added the standard functions such as `transfer`, `approve` and `transferFrom` as follows:
