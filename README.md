@@ -45,4 +45,25 @@ contractInstance.getWinner(
 There is a corresponding `<span>` tag with ID winner in the HTML which gets updated with the value of winner. I had to write a getWinner() function specially for this purpose instead of relying on Solidity's automatic getter functions. 
 
 You may view the screenshots of the frontend here:   
- 
+![alt text](https://github.com/aidenchia/50.037_Ex11/blob/master/src/images/fe1.png)
+![alt text](https://github.com/aidenchia/50.037_Ex11/blob/master/src/images/fe2.png)
+![alt text](https://github.com/aidenchia/50.037_Ex11/blob/master/src/images/fe3.png)
+
+As you can see, the winner's address gets updated as well as the pot amount which is the sum total of the bets wagered by both players. We can also view the player 1 and player 2 address in real-time on the frontend.  
+
+Player 1 and player 2 each have their own respective actions. For example, Player 1 can start the coin flip by pressing the button, which will trigger a Metamask popup to confirm his transaction, with the bet, bet amount, and nonce determined by his inputs in the respective fields. This was done with:
+```
+$("a#call_flipCoin").click(function() {
+  // 0 is heads, else is tails 
+  var bet = $("input#bet").val() == 0;
+  var betAmount = $("input#betAmount").val();
+  var nonce = $("input#nonce").val();
+  contractInstance.flipCoin(bet, nonce, 
+  {from:web3.eth.accounts[0], value: betAmount, gas:100000}, 
+    function(error, result) {
+      if(error) {
+        alert("Error flipCoin()");
+      }
+  });
+});
+```
