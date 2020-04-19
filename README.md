@@ -160,7 +160,7 @@ I then allow investors to buy tokens as follows:
 
         tokensSold += _numberOfTokens;
 
-        Sell(msg.sender, _numberOfTokens);
+        emit Sell(msg.sender, _numberOfTokens);
 }
 ```
 
