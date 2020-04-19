@@ -71,24 +71,24 @@ $("a#call_flipCoin").click(function() {
 ## Question 2  
 I implemented the ERC20 token standard by adding in the standard state variables and events into `CoinFlip.sol`:  
 ```
-	// ERC-20 standard
-	string public name = "CoinFlip";
-	string public symbol = "CF";
-	uint256 public totalSupply;
-	mapping(address => uint256) public balanceOf;
-	mapping(address => mapping(address => uint256)) public allowance;
+// ERC-20 standard
+string public name = "CoinFlip";
+string public symbol = "CF";
+uint256 public totalSupply;
+mapping(address => uint256) public balanceOf;
+mapping(address => mapping(address => uint256)) public allowance;
 
-	event Transfer (
-		address indexed _from,
-		address indexed _to,
-		uint256 _value
-	);
+event Transfer (
+  address indexed _from,
+  address indexed _to,
+  uint256 _value
+);
 
-	event Approval (
-		address indexed _owner,
-		address indexed _spender,
-		uint256 _value
-	);
+event Approval (
+  address indexed _owner,
+  address indexed _spender,
+  uint256 _value
+);
 ```
 
 I set the total supply to 1,000,000 tokens and all of it is given to the contract deployer as follows:
@@ -104,37 +104,37 @@ constructor() public {
 I then added the standard functions such as `transfer`, `approve` and `transferFrom` as follows:
 ```
 function transfer(address _to, uint256 _value) public returns (bool success) {
-		require(balanceOf[msg.sender] >= _value);
+  require(balanceOf[msg.sender] >= _value);
+  
+  balanceOf[msg.sender] -= _value;
+  balanceOf[msg.sender] += _value;
 
-		balanceOf[msg.sender] -= _value;
-		balanceOf[msg.sender] += _value;
+  emit Transfer(msg.sender, _to, _value);
 
-		emit Transfer(msg.sender, _to, _value);
-
-		return true;
-	}
+  return true;
+}
 
 function approve(address _spender, uint256 _value) public returns (bool success) {
-		allowance[msg.sender][_spender] = _value;
+  allowance[msg.sender][_spender] = _value;
 
-		emit Approval(msg.sender, _spender, _value);
+  emit Approval(msg.sender, _spender, _value);
 
-		return true;
-	}
+  return true;
+}
 
 function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
-		require(_value <= balanceOf[_from]);
-		require(_value <= allowance[_from][msg.sender]);
+  require(_value <= balanceOf[_from]);
+  require(_value <= allowance[_from][msg.sender]);
 
-		balanceOf[_from] -= _value;
-		balanceOf[_to] += _value;
+  balanceOf[_from] -= _value;
+  balanceOf[_to] += _value;
 
-		allowance[_from][msg.sender] -= _value;
+  allowance[_from][msg.sender] -= _value;
 
-		emit Transfer(_from, _to, _value);
+  emit Transfer(_from, _to, _value);
 
-		return true;
-	}
+  return true;
+}
 ```
 
 I then created `ICO.sol` for the CoinFlip contract to launch the crowd sale. It imports `CoinFlip.sol` and sets the admin as the deployer:
